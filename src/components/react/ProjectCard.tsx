@@ -1,12 +1,12 @@
-import { CardContent, CardActions, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { CardLayout } from "./CardLayout";
-import { ProjectStatus } from "./ProjectStatus";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import LanguageIcon from "@mui/icons-material/Language";
-import { toSlug, type ProjectMeta } from "./types";
+import { CardContent, CardActions, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { CardLayout } from './CardLayout';
+import { ProjectStatus } from './ProjectStatus';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LanguageIcon from '@mui/icons-material/Language';
+import { toSlug, type ProjectMeta } from './types';
 
-const PREFIX = "ProjectCard";
+const PREFIX = 'ProjectCard';
 
 const classes = {
   layout: `${PREFIX}-layout`,
@@ -16,20 +16,20 @@ const classes = {
 
 const StyledCardLayout = styled(CardLayout)({
   [`&.${classes.layout}`]: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   [`& .${classes.link}`]: {
-    textDecoration: "none",
-    height: "100%",
+    textDecoration: 'none',
+    height: '100%',
   },
   [`& .${classes.icon}`]: {
-    alignItems: "center",
+    alignItems: 'center',
   },
 });
 
-const linkStyle = { display: "flex " };
+const linkStyle = { display: 'flex ' };
 const GitHubLink = ({ url }: { url: string }) => (
   <a
     target="_blank"
@@ -63,8 +63,8 @@ export const ProjectCard = ({ frontmatter }: { frontmatter: ProjectMeta }) => {
   return (
     <StyledCardLayout className={classes.layout}>
       <a href={path} className={classes.link}>
-        <CardContent style={{ color: "white" }}>
-          <div style={{ display: "flex" }}>
+        <CardContent style={{ color: 'white' }}>
+          <div style={{ display: 'flex' }}>
             <Typography variant="h6">
               <strong>{title}</strong>
             </Typography>

@@ -1,16 +1,16 @@
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import { styled } from "@mui/material/styles";
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import { styled } from '@mui/material/styles';
 
-const PREFIX = "LinkedIn";
+const PREFIX = 'LinkedIn';
 
 const classes = {
   link: `${PREFIX}-link`,
 };
 
-const Root = styled("a")(({ theme }) => ({
+const Root = styled('a')(({ theme }) => ({
   [`&.${classes.link}`]: {
-    color: "white !important",
-    textDecoration: "none",
+    color: 'white !important',
+    textDecoration: 'none',
     margin: theme.spacing(1),
   },
 }));

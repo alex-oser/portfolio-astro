@@ -1,12 +1,12 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import SiteHeader from '../components/react/SiteHeader';
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE } from '../constants';
 
 interface Props {
-	/** Page-specific title segment; combined as "{title} | alex-oser". */
-	title?: string;
-	description?: string;
+  /** Page-specific title segment; combined as "{title} | alex-oser". */
+  title?: string;
+  description?: string;
 }
 
 const { title, description } = Astro.props;
@@ -16,36 +16,36 @@ const year = new Date().getFullYear();
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={headTitle} description={description} />
-	</head>
-	<body>
-		<!-- Interactive MUI header island (smooth-scroll nav). -->
-		<SiteHeader client:idle siteTitle={SITE_TITLE} />
-		<div class="layout">
-			<main>
-				<slot />
-			</main>
-			<footer>
-				&copy; {year}, Built with <a href="https://astro.build">Astro</a>
-			</footer>
-		</div>
-		<style>
-			.layout {
-				margin: auto;
-				max-width: 1400px;
-				padding: 24px;
-			}
-			@media (min-width: 900px) {
-				.layout {
-					padding: 0 80px;
-				}
-			}
-			footer {
-				margin-top: 2rem;
-				padding-bottom: 2rem;
-				color: var(--text-dim);
-			}
-		</style>
-	</body>
+  <head>
+    <BaseHead title={headTitle} description={description} />
+  </head>
+  <body>
+    <!-- Interactive MUI header island (smooth-scroll nav). -->
+    <SiteHeader client:idle siteTitle={SITE_TITLE} />
+    <div class="layout">
+      <main>
+        <slot />
+      </main>
+      <footer>
+        &copy; {year}, Built with <a href="https://astro.build">Astro</a>
+      </footer>
+    </div>
+    <style>
+      .layout {
+        margin: auto;
+        max-width: 1400px;
+        padding: 24px;
+      }
+      @media (min-width: 900px) {
+        .layout {
+          padding: 0 80px;
+        }
+      }
+      footer {
+        margin-top: 2rem;
+        padding-bottom: 2rem;
+        color: var(--text-dim);
+      }
+    </style>
+  </body>
 </html>

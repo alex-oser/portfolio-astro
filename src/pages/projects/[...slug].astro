@@ -6,11 +6,11 @@ import { toSlug } from '../../components/react/types';
 // Slug derived from the title, preserving the old Gatsby URLs
 // (e.g. "Structure" -> /projects/structure).
 export async function getStaticPaths() {
-	const projects = await getCollection('projects');
-	return projects.map((entry) => ({
-		params: { slug: toSlug(entry.data.title) },
-		props: { entry },
-	}));
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({
+    params: { slug: toSlug(entry.data.title) },
+    props: { entry },
+  }));
 }
 
 const { entry } = Astro.props;
@@ -18,5 +18,5 @@ const { Content } = await render(entry);
 ---
 
 <PostLayout title={entry.data.title} caption={entry.data.caption}>
-	<Content />
+  <Content />
 </PostLayout>

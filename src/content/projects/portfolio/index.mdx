@@ -83,10 +83,10 @@ exports.onCreateBabelConfig = ({ actions }) => {
   actions.setBabelPlugin({
     name: '@babel/plugin-transform-react-jsx',
     options: {
-      runtime: 'automatic'
-    }
-  })
-}
+      runtime: 'automatic',
+    },
+  });
+};
 ```
 
 ### Create pages for each post
@@ -100,9 +100,9 @@ The steps in the below code are:
 1. Query the names of all MDX files in the `projects` directory
 2. Set `ProjectLayout` as the component that should be rendered on each page
 3. For each file found
-    - get the previous and next files
-    - create a page at the path for the post
-    - The `context` passed to the created page will be accessible with the `ProjectLayout` component as input props
+   - get the previous and next files
+   - create a page at the path for the post
+   - The `context` passed to the created page will be accessible with the `ProjectLayout` component as input props
 
 ```js
 exports.createPages = async ({ graphql, actions, reporter }) => {
@@ -125,25 +125,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           }
         }
       }
-    `)
-  }
-  const projectsData = await getMdxData("projects");
+    `);
+  };
+  const projectsData = await getMdxData('projects');
   // Handle errors
   if (projectsData.errors) {
-    reporter.panicOnBuild("Error while running GraphQL query for MDX data.")
-    return
+    reporter.panicOnBuild('Error while running GraphQL query for MDX data.');
+    return;
   }
-  const ProjectLayout = path.resolve("src/components/projects/ProjectLayout.tsx");
+  const ProjectLayout = path.resolve('src/components/projects/ProjectLayout.tsx');
   // Create project pages.
   const projects = projectsData.data.allMdx.edges;
   projects.forEach((post, index) => {
-    const previous =
-      index === projects.length - 1
-        ? null
-        : projects[index + 1].node;
+    const previous = index === projects.length - 1 ? null : projects[index + 1].node;
     const next = index === 0 ? null : projects[index - 1].node;
     createPage({
-      path: `/projects/${(post.node.frontmatter.title).replace(/\s+/g, '-').toLowerCase()}`,
+      path: `/projects/${post.node.frontmatter.title.replace(/\s+/g, '-').toLowerCase()}`,
       component: ProjectLayout,
       context: {
         title: post.node.frontmatter.title,
@@ -157,6 +154,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 ```
 
 # RSS Feed
+
 Finally, I found myself wanting to create an RSS feed for the site. Although I had not used an RSS reader before, building this site and seeing other Gatsby creators using them helped me realize just how useful they can be. Configuring Gatsby to work with MDX and RSS required the last bit of configuration before I could fully begin focusing creating content.
 
 ```js

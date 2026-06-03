@@ -40,14 +40,14 @@ Add a post by creating `src/content/<collection>/<name>/index.mdx` with frontmat
 - **snippets** — `title`, `caption`, `date`
 - **blog** — `title`, optional `caption`, `date`
 
-Co-locate images next to the post and reference them with relative Markdown (`![alt](./img.png)`) — Astro optimizes them automatically. Use fenced code blocks (```` ```js ````) for syntax-highlighted code. Post URLs are derived from the title.
+Co-locate images next to the post and reference them with relative Markdown (`![alt](./img.png)`) — Astro optimizes them automatically. Use fenced code blocks (` ```js `) for syntax-highlighted code. Post URLs are derived from the title.
 
 ## Commands
 
-| Command           | Action                                       |
-| :---------------- | :------------------------------------------- |
-| `npm install`     | Install dependencies                         |
-| `npm run dev`     | Dev server at `localhost:4321`               |
-| `npm run build`   | Build to `./dist/`                           |
-| `npm run preview` | Preview the production build locally         |
-| `npx astro check` | Type-check the project                       |
+| Command           | Action                               |
+| :---------------- | :----------------------------------- |
+| `npm install`     | Install dependencies                 |
+| `npm run dev`     | Dev server at `localhost:4321`       |
+| `npm run build`   | Build to `./dist/`                   |
+| `npm run preview` | Preview the production build locally |
+| `npx astro check` | Type-check the project               |

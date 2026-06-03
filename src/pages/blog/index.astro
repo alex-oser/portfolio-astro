@@ -5,38 +5,38 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import { toSlug } from '../../components/react/types';
 
 const posts = (await getCollection('blog'))
-	.map((e) => e.data)
-	.sort((a, b) => b.date.valueOf() - a.date.valueOf());
+  .map((e) => e.data)
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf());
 ---
 
 <BaseLayout title="Blog">
-	<h1>Blog</h1>
-	{posts.length === 0 && <p>No posts yet — check back soon.</p>}
-	<ul class="posts">
-		{
-			posts.map((post) => (
-				<li>
-					<a href={`/blog/${toSlug(post.title)}`}>
-						<span class="title">{post.title}</span>
-						<FormattedDate date={post.date} />
-					</a>
-				</li>
-			))
-		}
-	</ul>
+  <h1>Blog</h1>
+  {posts.length === 0 && <p>No posts yet — check back soon.</p>}
+  <ul class="posts">
+    {
+      posts.map((post) => (
+        <li>
+          <a href={`/blog/${toSlug(post.title)}`}>
+            <span class="title">{post.title}</span>
+            <FormattedDate date={post.date} />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </BaseLayout>
 
 <style>
-	.posts {
-		list-style: none;
-		padding: 0;
-	}
-	.posts li {
-		margin-bottom: 1em;
-	}
-	.posts .title {
-		display: block;
-		font-size: 1.3em;
-		font-weight: 700;
-	}
+  .posts {
+    list-style: none;
+    padding: 0;
+  }
+  .posts li {
+    margin-bottom: 1em;
+  }
+  .posts .title {
+    display: block;
+    font-size: 1.3em;
+    font-weight: 700;
+  }
 </style>
