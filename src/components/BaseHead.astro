@@ -2,20 +2,11 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
-import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
+import sadie from '../assets/sadie.png';
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_AUTHOR } from '../constants';
 import { Font } from 'astro:assets';
 
-interface Props {
-  title: string;
-  description?: string;
-  image?: ImageMetadata;
-}
-
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
-const { title, description = SITE_DESCRIPTION, image = FallbackImage } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -39,21 +30,21 @@ const { title, description = SITE_DESCRIPTION, image = FallbackImage } = Astro.p
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Primary Meta Tags -->
-<title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
+<title>{SITE_TITLE}</title>
+<meta name="title" content={SITE_TITLE} />
+<meta name="description" content={SITE_DESCRIPTION} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
+<meta property="og:title" content={SITE_TITLE} />
+<meta property="og:description" content={SITE_DESCRIPTION} />
+<meta property="og:image" content={new URL(sadie.src, Astro.url)} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:creator" content={SITE_AUTHOR} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta property="twitter:title" content={SITE_TITLE} />
+<meta property="twitter:description" content={SITE_DESCRIPTION} />
+<meta property="twitter:image" content={new URL(sadie.src, Astro.url)} />

@@ -1,27 +1,18 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import SiteHeader from '../components/react/SiteHeader';
-import { SITE_TITLE } from '../constants';
+import Header from '../components/Header.astro';
 
-interface Props {
-  /** Page-specific title segment; combined as "{title} | alex-oser". */
-  title?: string;
-  description?: string;
-}
-
-const { title, description } = Astro.props;
-const headTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
 const year = new Date().getFullYear();
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={headTitle} description={description} />
+    <BaseHead />
   </head>
   <body>
-    <!-- Interactive MUI header island (smooth-scroll nav). -->
-    <SiteHeader client:idle siteTitle={SITE_TITLE} />
+    <!-- Static header; same-page smooth scroll handled by CSS scroll-behavior. -->
+    <Header />
     <div class="layout">
       <main>
         <slot />
