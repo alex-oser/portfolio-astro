@@ -1,0 +1,27 @@
+---
+title: dailydishatx
+status: live
+caption: A directory of daily food & drink specials in Austin, TX
+link: https://dailydishatx.com
+date: 2026-06-03
+---
+
+![Daily Dish ATX — Austin's daily special](./banner.png)
+
+Daily Dish ATX is a directory of the best daily food and drink specials around Austin. The idea is simple: it's hard to keep track of which bar has the good Tuesday taco deal or where to find a happy hour that's actually on _right now_. Daily Dish ATX collects them all in one place and lets you filter by day, neighborhood, venue type, price, and cuisine — so you can answer "where should we go tonight?" in a few taps.
+
+Every deal card shows the venue, the days and hours it runs, a price tier, and a live Google rating pulled in from the Places API. A fuzzy search (powered by Fuse.js) lets you type a venue name or "margarita" and immediately narrow the list, and the whole filter state is synced to the URL so a curated view is shareable.
+
+### The build
+
+The frontend is **React + TypeScript** built with **Vite**, styled with **CSS Modules** over a set of CSS custom-property design tokens — no Tailwind, no component library. The visual theme is a vintage "Hill Country Diner" look: a cream paper background with a radial-dot grid, heavy ink borders, hard offset shadows with no blur, and cards that look like menu tickets.
+
+Behind it is an **Express 5 + Postgres** API. Deals live in Postgres and are served by a single `/api/deals` endpoint that joins in community like counts and cached Google review data. There's a public submission flow (anyone can suggest a venue), a report flow for stale deals, and a gated `/admin` surface for reviewing submissions and managing the directory.
+
+A few pieces I'm happy with:
+
+- **Google Sign-In admin auth** — the admin routes are protected with Google Identity Services. The server verifies the ID token, checks the email against an allowlist, and sets an httpOnly, HMAC-signed session cookie that's re-validated (and re-checked against the allowlist) on every protected request, so revoking access is instant.
+- **Signed direct-to-Cloudinary uploads** — deal photos are uploaded straight from the browser to Cloudinary using short-lived server-signed payloads. Image bytes never pass through the app server, and the Cloudinary API secret never leaves the backend. Uploads are auto-grouped into a per-venue folder.
+- **Google reviews on a schedule** — a `refresh-reviews` job pulls ratings and review counts into the database so the cards stay fresh without hammering the Places API on every page load.
+
+The app is deployed on Railway and serves the built SPA from the same Express server in production. It's live now at [dailydishatx.com](https://dailydishatx.com) — go find yourself a deal.
