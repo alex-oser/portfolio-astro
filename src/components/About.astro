@@ -1,0 +1,106 @@
+---
+// Hero/about section, ported from react/About.tsx. The old useMediaQuery logic
+// is now pure CSS: the tagline moves below the images under sm (600px), and the
+// "me" image is hidden under md (900px). The tagline is rendered twice and the
+// breakpoints toggle which copy is visible.
+import { Image } from 'astro:assets';
+import me from '../assets/me.png';
+import sadie from '../assets/sadie.png';
+---
+
+<div class="about">
+  <div class="flex">
+    <div class="text-container">
+      <h3 class="hi">Hi, I'm Alex</h3>
+      <p class="profile profile-desktop">
+        I like to build things, climb things, and throw things for <span>Sadie</span>
+      </p>
+    </div>
+    <div class="images">
+      <Image class="sadie" src={sadie} alt="sadie" loading="eager" />
+      <Image class="me" src={me} alt="me" loading="eager" />
+    </div>
+  </div>
+  <p class="profile profile-mobile">
+    I like to build things, climb things, and throw things for <span>Sadie</span>
+  </p>
+</div>
+
+<style>
+  .about {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-self: center;
+  }
+  .flex {
+    display: flex;
+    align-items: center;
+  }
+  .text-container {
+    align-self: center;
+    /* Take roughly half the row so the heading + tagline wrap aggressively. */
+    flex: 1;
+    min-width: 0;
+    max-width: 50%;
+  }
+  .hi {
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.167;
+    margin: 0;
+    color: white;
+  }
+  .profile {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.334;
+    margin: 0;
+    color: white;
+  }
+  .images {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+  }
+  /* Both images scale down to fit their container instead of overflowing.
+     min-width: 0 lets the flex items shrink below their intrinsic width. */
+  .sadie {
+    width: 360px;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    object-fit: contain;
+  }
+  /* Capped smaller so "me" doesn't dominate, and shrinks with the viewport. */
+  .me {
+    width: 420px;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* MUI breakpoints: md = 900px, sm = 600px. */
+  /* Below md there isn't room for both, so drop "me" and keep Sadie. */
+  @media (max-width: 899.95px) {
+    .me {
+      display: none;
+    }
+  }
+  /* Below sm the tagline moves out of the cramped text column to its own row. */
+  .profile-mobile {
+    display: none;
+  }
+  @media (max-width: 599.95px) {
+    .profile-desktop {
+      display: none;
+    }
+    .profile-mobile {
+      display: block;
+    }
+  }
+</style>

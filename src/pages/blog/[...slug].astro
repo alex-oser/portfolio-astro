@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
-import { toSlug } from '../../components/react/types';
+import { toSlug } from '../../components/types';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');

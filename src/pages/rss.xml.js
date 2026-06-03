@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../constants';
-import { toSlug } from '../components/react/types';
+import { toSlug } from '../components/types';
 
 // Mirrors the old gatsby-plugin-feed: one feed covering every post across
 // projects, snippets, and blog, newest first.

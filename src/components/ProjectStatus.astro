@@ -1,0 +1,35 @@
+---
+// Status chip, ported from the MUI <Chip> (react/ProjectStatus.tsx).
+import { STATUS_COLORS } from './types';
+
+interface Props {
+  status: string;
+}
+
+const { status } = Astro.props;
+const key = status.replace(/\s/g, '').toLowerCase();
+const color = STATUS_COLORS[key];
+---
+
+<span class="chip" style={`background-color:${color}`}>
+  <span class="chip-label">{status}</span>
+</span>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    height: 24px;
+    border-radius: 16px;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+  .chip-label {
+    padding: 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+  }
+</style>

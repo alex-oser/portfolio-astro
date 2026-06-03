@@ -1,7 +1,6 @@
 /*
-  Global base styles for the dark theme. Mirrors the MUI theme
-  (see src/components/react/theme.ts) so statically-rendered pages
-  (e.g. project/snippet posts) match the React islands on first paint.
+  Global base styles for the dark theme, ported from the former MUI theme.
+  Component-level styling lives in the individual .astro components.
 */
 
 :root {
@@ -19,6 +18,9 @@ html {
 
 body {
   font-family: var(--font-raleway), Roboto, sans-serif;
+  /* Match MUI's CssBaseline so type renders at the same (lighter) weight. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
   text-align: left;

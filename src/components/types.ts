@@ -1,5 +1,5 @@
 // Shape of the data passed from Astro pages (via getCollection) into the
-// React islands. Dates arrive as Date objects from the content collections.
+// portfolio components. Dates arrive as Date objects from the content collections.
 export interface ProjectMeta {
   title: string;
   status: 'live' | 'in progress' | 'idea' | 'dead';
@@ -33,3 +33,11 @@ export const formatDate = (date: Date | string) =>
     day: 'numeric',
     timeZone: 'UTC',
   });
+
+// Project status chip colors, ported from the old MUI theme's custom `status` key.
+export const STATUS_COLORS: Record<string, string> = {
+  dead: '#ff4a4a',
+  inprogress: '#6573c3',
+  idea: '#d56edf',
+  live: '#579f57',
+};

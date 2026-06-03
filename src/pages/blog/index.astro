@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import { toSlug } from '../../components/react/types';
+import { toSlug } from '../../components/types';
 
 const posts = (await getCollection('blog'))
   .map((e) => e.data)

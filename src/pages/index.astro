@@ -1,9 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Home from '../components/react/Home';
+import About from '../components/About.astro';
+import GridLayout from '../components/GridLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import BlogCard from '../components/BlogCard.astro';
+import SnippetCard from '../components/SnippetCard.astro';
 
-// Sort newest-first, mirroring the old `sort: {frontmatter___date, DESC}` queries.
+// Sort newest-first
 const projects = (await getCollection('projects'))
   .map((p) => p.data)
   .sort((a, b) => b.date.valueOf() - a.date.valueOf());
@@ -16,5 +20,24 @@ const posts = (await getCollection('blog'))
 ---
 
 <BaseLayout>
-  <Home client:load projects={projects} snippets={snippets} posts={posts} />
+  <About />
+  <GridLayout title="Projects">
+    {projects.map((project) => <ProjectCard frontmatter={project} />)}
+  </GridLayout>
+  {
+    posts.length > 0 && (
+      <GridLayout title="Blog">
+        {posts.map((post) => (
+          <BlogCard title={post.title} date={post.date} caption={post.caption} />
+        ))}
+      </GridLayout>
+    )
+  }
+  <GridLayout title="Snippets">
+    {
+      snippets.map((snippet) => (
+        <SnippetCard title={snippet.title} date={snippet.date} caption={snippet.caption} />
+      ))
+    }
+  </GridLayout>
 </BaseLayout>

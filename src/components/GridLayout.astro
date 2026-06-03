@@ -1,0 +1,45 @@
+---
+// Section wrapper with a title + responsive card grid.
+// Ported from react/GridLayout.tsx (3 cols → 2 at md → 1 at sm).
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const id = title.toLowerCase().replace(' ', '-');
+---
+
+<div class="grid-layout">
+  <h4 id={id} class="grid-title">{title}</h4>
+  <div class="grid"><slot /></div>
+</div>
+
+<style>
+  .grid-title {
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.235;
+    margin: 0 0 8px 0;
+    color: white;
+  }
+
+  .grid {
+    display: grid;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* MUI breakpoints: md = 900px, sm = 600px. */
+  @media (max-width: 899.95px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 599.95px) {
+    .grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+</style>

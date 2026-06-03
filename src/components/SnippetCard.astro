@@ -1,0 +1,53 @@
+---
+// Snippet card, ported from react/SnippetCard.tsx.
+import CardLayout from './CardLayout.astro';
+import { toSlug, formatDate, type SnippetMeta } from './types';
+
+type Props = SnippetMeta;
+
+const { title, caption, date } = Astro.props;
+const path = `/snippets/${toSlug(title)}`;
+---
+
+<CardLayout>
+  <a href={path} class="card-link">
+    <div class="card-content">
+      <h6 class="card-title"><strong>{title}</strong></h6>
+      <p class="date">{formatDate(date)}</p>
+      <p class="caption">{caption}</p>
+    </div>
+  </a>
+</CardLayout>
+
+<style>
+  .card-link {
+    text-decoration: none;
+    height: 100%;
+    color: white;
+    display: block;
+  }
+  .card-content {
+    padding: 16px 16px 24px;
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0;
+    color: white;
+  }
+  .date {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.57;
+    margin: 0;
+    color: white;
+  }
+  .caption {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 0;
+    color: white;
+  }
+</style>
