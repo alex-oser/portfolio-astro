@@ -1,0 +1,6 @@
+# Netlify deploy config for the Astro build.
+# URLs are unchanged from the old Gatsby site (/projects/*, /snippets/*,
+# /rss.xml), so no redirects are required.
+[build]
+  command = "npm run build"
+  publish = "dist"

@@ -1,0 +1,39 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface Props {
+	title: string;
+	caption?: string;
+	/** Shown for snippets/blog posts; omitted for projects (matches the old layouts). */
+	date?: Date;
+}
+
+const { title, caption, date } = Astro.props;
+---
+
+<BaseLayout title={title} description={caption}>
+	<article class="post">
+		<h1>{title}</h1>
+		{date && <p class="date"><FormattedDate date={date} /></p>}
+		<div class="prose">
+			<slot />
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	.post {
+		max-width: 820px;
+		margin: 0 auto;
+	}
+	.date {
+		color: var(--text-dim);
+		margin-bottom: 1.5em;
+	}
+	/* Space out images that posts embed via markdown. */
+	.prose :global(img) {
+		display: block;
+		margin: 1.5em auto;
+	}
+</style>

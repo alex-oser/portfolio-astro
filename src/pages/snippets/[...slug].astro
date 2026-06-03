@@ -4,8 +4,8 @@ import PostLayout from '../../layouts/PostLayout.astro';
 import { toSlug } from '../../components/react/types';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((entry) => ({
+	const snippets = await getCollection('snippets');
+	return snippets.map((entry) => ({
 		params: { slug: toSlug(entry.data.title) },
 		props: { entry },
 	}));

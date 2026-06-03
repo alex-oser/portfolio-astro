@@ -3,9 +3,11 @@ import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { toSlug } from '../../components/react/types';
 
+// Slug derived from the title, preserving the old Gatsby URLs
+// (e.g. "Structure" -> /projects/structure).
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((entry) => ({
+	const projects = await getCollection('projects');
+	return projects.map((entry) => ({
 		params: { slug: toSlug(entry.data.title) },
 		props: { entry },
 	}));
@@ -15,6 +17,6 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<PostLayout title={entry.data.title} caption={entry.data.caption} date={entry.data.date}>
+<PostLayout title={entry.data.title} caption={entry.data.caption}>
 	<Content />
 </PostLayout>

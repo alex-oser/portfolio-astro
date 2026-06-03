@@ -1,0 +1,25 @@
+---
+title: Why I gcap
+date: 2021-07-05
+caption: DRYing up my Git interactions
+---
+
+I use `gcap` so often it has become a verb. It is able to describe over 90% of my interactions with Git and it makes those interactions easier and quicker. Simply set it in your shell profile (ex. .zshrc, .bashrc) and call it with an optional commit message.
+
+```bash
+# ex. gcap "I love gcap"
+function gcap {
+  git add -A
+  git commit -m "$@"
+  git push
+}
+```
+
+The other aliases below help out the rest of the time when `gcap`-ing is not enough.
+
+```bash
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit"
+alias gco="git checkout"
+```

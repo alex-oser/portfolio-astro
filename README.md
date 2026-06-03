@@ -1,63 +1,53 @@
-# Astro Starter Kit: Blog
+# alexoser.com
 
-```sh
-npm create astro@latest -- --template blog
-```
+My personal portfolio + blogfolio, built with [Astro](https://astro.build). Migrated from Gatsby.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Content lives in three collections (`projects`, `snippets`, `blog`) authored in MDX. Interactive UI is built with React + MUI, mounted as Astro islands; code blocks are highlighted at build time with Shiki.
 
-Features:
+## Stack
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+- **Astro** — static site generation, content collections, image optimization
+- **React + MUI** (islands) — header, homepage (About / Projects / Snippets), cards
+- **MDX** — project/snippet/blog posts in `src/content/`
+- **Shiki** (`night-owl`) — zero-JS syntax highlighting
+- **@astrojs/rss** + **@astrojs/sitemap** — feed at `/rss.xml`, sitemap
+- Deployed on **Netlify** (`netlify.toml`)
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project structure
 
 ```text
-├── public/
+├── public/                  # favicon, web manifest, static assets
 ├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+│   ├── assets/              # fonts (Raleway) + images (me, sadie, favicon)
+│   ├── components/
+│   │   ├── react/           # MUI/React islands (theme, Providers, Header, cards, About…)
+│   │   ├── BaseHead.astro
+│   │   └── FormattedDate.astro
+│   ├── content/             # projects/, snippets/, blog/ — each post is <name>/index.mdx
+│   ├── layouts/             # BaseLayout.astro, PostLayout.astro
+│   ├── pages/               # index, projects/[...slug], snippets/[...slug], blog/*, 404, rss.xml.js
+│   ├── consts.ts            # site metadata
+│   └── content.config.ts    # collection schemas
+├── astro.config.mjs         # integrations, Shiki theme, local fonts
+└── netlify.toml
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Authoring content
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Add a post by creating `src/content/<collection>/<name>/index.mdx` with frontmatter:
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+- **projects** — `title`, `status` (`live | in progress | idea | dead`), `caption`, optional `link`/`repo`, `date`
+- **snippets** — `title`, `caption`, `date`
+- **blog** — `title`, optional `caption`, `date`
 
-Any static assets, like images, can be placed in the `public/` directory.
+Co-locate images next to the post and reference them with relative Markdown (`![alt](./img.png)`) — Astro optimizes them automatically. Use fenced code blocks (```` ```js ````) for syntax-highlighted code. Post URLs are derived from the title.
 
-## 🧞 Commands
+## Commands
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+| Command           | Action                                       |
+| :---------------- | :------------------------------------------- |
+| `npm install`     | Install dependencies                         |
+| `npm run dev`     | Dev server at `localhost:4321`               |
+| `npm run build`   | Build to `./dist/`                           |
+| `npm run preview` | Preview the production build locally         |
+| `npx astro check` | Type-check the project                       |
