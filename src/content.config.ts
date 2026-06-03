@@ -25,13 +25,4 @@ const snippets = defineCollection({
   }),
 });
 
-const blog = defineCollection({
-  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    caption: z.string().optional(),
-    date: z.coerce.date(),
-  }),
-});
-
-export const collections = { projects, snippets, blog };
+export const collections = { projects, snippets };

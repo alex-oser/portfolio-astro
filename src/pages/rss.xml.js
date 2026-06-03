@@ -4,9 +4,9 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../constants';
 import { toSlug } from '../components/types';
 
 // Mirrors the old gatsby-plugin-feed: one feed covering every post across
-// projects, snippets, and blog, newest first.
+// projects and snippets, newest first.
 export async function GET(context) {
-  const collections = ['projects', 'snippets', 'blog'];
+  const collections = ['projects', 'snippets'];
   const items = [];
 
   for (const collection of collections) {

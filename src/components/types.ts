@@ -15,12 +15,6 @@ export interface SnippetMeta {
   date: Date | string;
 }
 
-export interface BlogMeta {
-  title: string;
-  caption?: string;
-  date: Date | string;
-}
-
 export const toSlug = (title: string) => title.replace(/\s+/g, '-').toLowerCase();
 
 // Format in UTC so a "2026-06-02" frontmatter date (parsed as UTC midnight)

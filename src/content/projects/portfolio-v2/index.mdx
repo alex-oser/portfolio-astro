@@ -1,0 +1,138 @@
+---
+title: portfolio-v2
+status: live
+caption: Rebuilding my blogfolio from Gatsby to Astro
+link: https://alexoser.com
+repo: https://github.com/alex-oser/portfolio-astro
+date: 2026-06-02
+---
+
+A few years ago I wrote about [building this site with Gatsby](/projects/portfolio). It served me well, but somewhere along the way the joy drained out of it. Dependency upgrades turned into afternoons, the `gatsby develop` cache needed regular sacrifices to keep working, and every time I sat down to actually _write_ something I first had to remember how the GraphQL layer was wired together.
+
+What finally forced my hand was that Gatsby is, for all practical purposes, deprecated. After the Netlify acquisition the framework stopped getting meaningful releases, the plugin ecosystem I leaned on went stale, and security advisories started piling up against dependencies that were never going to be patched. A site I couldn't safely `npm install` anymore is not a site I can maintain. That was the prompt to switch.
+
+So this month's project was migrating the whole thing to [Astro](https://astro.build). I wanted to keep everything I liked — MDX posts, the same URLs, the same look — and throw away everything I didn't. And rather than grind through the port by hand, I let [Claude Code](https://www.anthropic.com/claude-code) do the majority of it. Here is how it went.
+
+# Why Astro
+
+The pitch that sold me is that Astro ships zero JavaScript by default and only hydrates the interactive bits you ask it to. Most of my site is just content. There is no reason to send React down the wire to render a paragraph about a side project. Coming from Gatsby — where every page booted a full React runtime whether it needed one or not — that inversion was exactly what I wanted: static by default, interactive only where I explicitly opt in. As it turned out, I never needed to opt in at all.
+
+# Letting Claude Code drive the migration
+
+A framework migration is mostly mechanical: the same handful of transformations applied across dozens of files. That is miserable to do by hand and exactly the kind of work Claude Code is good at. So I handed it the bulk of the job.
+
+It read the old Gatsby project, mapped out where everything lived, and worked through the port section by section — translating `gatsby-node.js`'s `createPages` into Astro's dynamic routes, converting each React component into a plain `.astro` file, lifting the `styled` and `sx` styling into scoped CSS, and rewiring the GraphQL queries into `getCollection` calls. I stayed in the loop reviewing diffs and making the judgment calls — what to keep, what to drop, how the final thing should feel — while it handled the repetitive translation and caught the details I would have missed. The work that used to make migrations dreadful was the part I barely touched.
+
+# Content collections instead of GraphQL
+
+In Gatsby, my `projects`, `snippets`, and `blog` posts were sourced from the filesystem and queried through GraphQL. It worked, but it always felt like a lot of ceremony to ask "what posts do I have?".
+
+Astro's content collections replace all of that with a typed schema and a plain function call. I describe the shape of my frontmatter once in `src/content.config.ts`:
+
+```ts
+const projects = defineCollection({
+  loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    title: z.string(),
+    status: z.enum(['live', 'in progress', 'idea', 'dead']),
+    caption: z.string(),
+    link: z.string().url().optional(),
+    repo: z.string().url().optional(),
+    date: z.coerce.date(),
+  }),
+});
+```
+
+Now if I typo a `status` or forget a `date`, the build tells me before I ever open a browser. And fetching posts is just `getCollection('projects')` — no query language required.
+
+# Pages from files, not config
+
+The most Gatsby-specific code I had was `gatsby-node.js`, where I programmatically created a page for every post with `createPages`. In Astro that whole file disappears. A single dynamic route does the same job:
+
+```astro
+---
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({
+    params: { slug: toSlug(entry.data.title) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<PostLayout title={entry.data.title} caption={entry.data.caption}>
+  <Content />
+</PostLayout>
+```
+
+I derive the slug from the title exactly like I used to, so every old URL still works. That mattered to me — migrations that quietly break your links are not migrations, they are demolitions.
+
+# Code blocks that ship no JavaScript
+
+This is my favorite part. In the old site I had a `<CodeRenderer>` component built on `prism-react-renderer`, and because MDX v1 was fussy about it, I stored my code samples as escaped strings in little `code.ts` files and imported them in. It worked, but it was deeply silly, and shipping a syntax highlighter to the client to render code that never changes always bothered me.
+
+Astro highlights code at _build time_ with [Shiki](https://shiki.style/). I deleted every `code.ts`, dropped the component, and went back to plain fenced code blocks:
+
+````md
+```ts
+const mac = () => spoofYourMacAddress();
+```
+````
+
+One line of config picks the theme:
+
+```js
+markdown: {
+  shikiConfig: { theme: 'night-owl' },
+},
+```
+
+The result is the same `nightOwl` look I always had, except now it is pure HTML and CSS. Zero kilobytes of JavaScript.
+
+# Ripping out React entirely
+
+The original plan was to keep my MUI components and run them as Astro islands — lift and shift, hydrate the few interactive ones, move on. Claude Code did exactly that first pass, porting the components over almost verbatim with `styled` and `sx` intact and mounting the entry points with hydration directives.
+
+Then I looked at what was actually interactive. The answer was: nothing that needed React. A header that smooth-scrolls, some cards, an about section — all of it is static markup with a little scoped CSS. I was about to ship a React runtime, MUI, and emotion to render content that never changes, which is the exact thing I left Gatsby to get away from.
+
+So I went the rest of the way. Claude Code rewrote every component as a plain `.astro` file, turned the MUI `styled` blocks and `sx` props into scoped `<style>` tags, and the React, MUI, and emotion dependencies came out of `package.json` entirely:
+
+```astro
+---
+import { SITE_TITLE } from '../constants';
+---
+
+<header class="header">
+  <a href="/" class="link">{SITE_TITLE}</a>
+  <!-- ...static nav, no hydration directive in sight... -->
+</header>
+
+<style>
+  .header { /* ...the old sx styles, now scoped CSS... */ }
+</style>
+```
+
+The result is a site that ships **zero** JavaScript — not "zero by default with a few islands," just zero. No `client:*` directives anywhere.
+
+Co-located images came along for free too. Where Gatsby needed `gatsby-plugin-image` and `gatsby-remark-images`, Astro just optimizes any image I reference relatively from an MDX file. The `StaticImage` imports turned into ordinary `![alt](./thing.png)` and got smaller `webp` files out the other side.
+
+# One gotcha worth your time
+
+If you use [Astro's local fonts](https://docs.astro.build/en/guides/fonts/), here is the half hour I will save you.
+
+Astro does not register an `@font-face` named `Raleway`. It generates a hashed family name behind the scenes and only exposes it through a CSS variable like `--font-raleway`. This bit me during the islands phase: my global stylesheet used the variable and looked right, but the MUI theme I had ported said `fontFamily: "Raleway, Roboto"` — a literal name that matched nothing — so every component silently fell back to a serif. Going fully static made the problem disappear, since now there is exactly one place fonts are declared, and it references the variable:
+
+```css
+body {
+  font-family: var(--font-raleway), Roboto, sans-serif;
+}
+```
+
+The rule of thumb: reference Astro fonts by their `--font-*` variable everywhere, never by the human-readable name.
+
+# Was it worth it?
+
+Yes, easily. `@astrojs/rss` rebuilt my feed at the same `/rss.xml`, the sitemap comes from an integration, and the dev server starts instantly. The site ships no JavaScript, the dependency list is a fraction of what it was, and `npm install` no longer greets me with a wall of advisories. But the real win is quieter than any benchmark: the project I had to relearn every time I opened it now mostly stays out of my way — and the migration that would have eaten a month of evenings took an afternoon of reviewing Claude Code's diffs. Which means I am more likely to actually write the next post — like this one 😀
