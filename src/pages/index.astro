@@ -20,11 +20,11 @@ const snippets = (await getCollection('snippets'))
   <GridLayout title="Projects">
     {projects.map((project) => <ProjectCard frontmatter={project} />)}
   </GridLayout>
-  <GridLayout title="Snippets">
+  <!-- <GridLayout title="Snippets">
     {
       snippets.map((snippet) => (
         <SnippetCard title={snippet.title} date={snippet.date} caption={snippet.caption} />
       ))
     }
-  </GridLayout>
+  </GridLayout> -->
 </BaseLayout>
