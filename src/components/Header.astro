@@ -25,10 +25,6 @@ import { SITE_TITLE } from '../constants';
         </svg>
       </a>
     </div>
-    <nav class="header-right">
-      <a href="/#projects" class="link">Projects</a>
-      <a href="/#snippets" class="link">Snippets</a>
-    </nav>
   </div>
 </header>
 
@@ -42,26 +38,31 @@ import { SITE_TITLE } from '../constants';
     margin-bottom: 16px; /* theme.spacing(2) */
   }
 
+  /* Same container geometry as .layout in BaseLayout, so the title's left
+     edge lines up with the page content below. */
   .header-contents {
     display: flex;
-    justify-content: space-around;
     height: 100%;
+    margin: auto;
+    max-width: 1400px;
+    padding: 0 24px;
+  }
+
+  @media (min-width: 900px) {
+    .header-contents {
+      padding: 0 80px;
+    }
   }
 
   .header-left {
     display: flex;
     align-items: center;
-  }
-
-  .header-right {
-    display: flex;
-    align-self: center;
+    gap: 16px; /* theme.spacing(2) — was 8px margins on both sides of each link */
   }
 
   .link {
     color: white;
     text-decoration: none;
-    margin: 8px; /* theme.spacing(1) */
   }
 
   .icon-link {

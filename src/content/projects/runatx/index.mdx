@@ -1,0 +1,27 @@
+---
+title: runatx
+status: live
+caption: An interactive map directory of Austin run clubs
+link: https://runatx.club
+date: 2026-08-12
+---
+
+![RunATX — find your pack](./banner.png)
+
+RunATX is a directory of Austin run clubs: a filterable list paired with a live map of meeting points and routes. Austin has a huge run club scene, but figuring out who runs where — and whether a group is your pace — meant digging through a dozen Instagram bios. RunATX puts every club on one map, so you can filter by day, time of day, neighborhood, distance, and vibe, hover a session to see its actual route drawn on the map, and find your pack.
+
+Every club card shows when and where the group meets, its cadence, and the routes it runs. The whole filter state syncs to the URL, so "social 5Ks on the east side" is a shareable link. Beyond the directory there are public runner profiles (`/u/<handle>`) with check-in trophies, dedicated club pages, and an internal admin tool for keeping the data fresh.
+
+### The build
+
+The frontend is **React + TypeScript** on **Vite**, with the map rendered by **MapLibre GL** via react-map-gl and basemap tiles from MapTiler's OpenMapTiles "Streets" style. Styling is one hand-written stylesheet — no Tailwind, no component library.
+
+The data lives in **Supabase**: Postgres with **PostGIS** for route geometry, Storage for the original GPX files, and RLS making everything public-read while writes require the service role. Routes start life as GPX files drawn by hand; a seed script parses each one into a PostGIS `LineString` and uploads the original to a storage bucket. PostGIS serializes geometry back out as GeoJSON, so coordinates arrive in exactly the `[lng, lat]` order MapLibre wants — the map draws real route lines, not straight-line approximations.
+
+A few pieces I'm happy with:
+
+- **OG share images on the edge** — a Vercel edge function renders 1200×630 share cards on the fly with `@vercel/og` for the home page, every club, and every runner profile. A sibling function serves crawler-visible HTML for profile and club routes, swapping per-page meta tags into the SPA shell so link previews work even though bots don't run JS — and it varies the cache key with the check-in count, so a profile's preview card refreshes as new stamps land.
+- **Shareable everything** — filters, selected club, and map state all round-trip through the URL, so any curated view of the directory is a link you can text to a friend.
+- **Zero-setup dev** — with no API keys at all, the app falls back to MapLibre's free demo tiles and just runs. One optional MapTiler key upgrades the basemap to the full street-level look.
+
+The app is deployed on Vercel and live at [runatx.club](https://runatx.club) — go find your pack.
