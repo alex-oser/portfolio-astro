@@ -8,20 +8,46 @@ date: 2026-08-12
 
 ![RunATX — find your pack](./banner.png)
 
-RunATX is a directory of Austin run clubs: a filterable list paired with a live map of meeting points and routes. Austin has a huge run club scene, but figuring out who runs where — and whether a group is your pace — meant digging through a dozen Instagram bios. RunATX puts every club on one map, so you can filter by day, time of day, neighborhood, distance, and vibe, hover a session to see its actual route drawn on the map, and find your pack.
+RunATX is an interactive directory of Austin run clubs made to help answer one question every runner in this city has asked before:
 
-Every club card shows when and where the group meets, its cadence, and the routes it runs. The whole filter state syncs to the URL, so "social 5Ks on the east side" is a shareable link. Beyond the directory there are public runner profiles (`/u/<handle>`) with check-in trophies, dedicated club pages, and an internal admin tool for keeping the data fresh.
+> _Who's running tonight?_
 
-### The build
+## Overview
 
-The frontend is **React + TypeScript** on **Vite**, with the map rendered by **MapLibre GL** via react-map-gl and basemap tiles from MapTiler's OpenMapTiles "Streets" style. Styling is one hand-written stylesheet — no Tailwind, no component library.
+Austin has one of the biggest run club scenes anywhere, but the information about it is scattered across a dozen Instagram bios and group chats. Figuring out who runs where — and whether a group is your pace — has no consolidated resource.
 
-The data lives in **Supabase**: Postgres with **PostGIS** for route geometry, Storage for the original GPX files, and RLS making everything public-read while writes require the service role. Routes start life as GPX files drawn by hand; a seed script parses each one into a PostGIS `LineString` and uploads the original to a storage bucket. PostGIS serializes geometry back out as GeoJSON, so coordinates arrive in exactly the `[lng, lat]` order MapLibre wants — the map draws real route lines, not straight-line approximations.
+RunATX puts every club on one map. You can filter by day, time of day, neighborhood, distance, and vibe, hover a session to see its actual route drawn on the map, and find your pack.
 
-A few pieces I'm happy with:
+The app is a **React + TypeScript** SPA built with **Vite** and backed by **Supabase**, deployed on Vercel and live at [runatx.club](https://runatx.club). It is made up of a few main pieces:
 
-- **OG share images on the edge** — a Vercel edge function renders 1200×630 share cards on the fly with `@vercel/og` for the home page, every club, and every runner profile. A sibling function serves crawler-visible HTML for profile and club routes, swapping per-page meta tags into the SPA shell so link previews work even though bots don't run JS — and it varies the cache key with the check-in count, so a profile's preview card refreshes as new stamps land.
-- **Shareable everything** — filters, selected club, and map state all round-trip through the URL, so any curated view of the directory is a link you can text to a friend.
-- **Zero-setup dev** — with no API keys at all, the app falls back to MapLibre's free demo tiles and just runs. One optional MapTiler key upgrades the basemap to the full street-level look.
+1. [The map directory](/projects/runatx#the-map-directory)
+1. [Routes](/projects/runatx#routes)
+1. [Runner profiles](/projects/runatx#runner-profiles)
+1. [Share cards](/projects/runatx#share-cards)
 
-The app is deployed on Vercel and live at [runatx.club](https://runatx.club) — go find your pack.
+## The map directory
+
+The map is the primary tool for users to interact with: a filterable sidebar of club cards paired with a **MapLibre GL** map of meeting points and route lines, with basemap tiles from MapTiler's OpenMapTiles "Streets" style. Every card shows when and where the group meets, its cadence, and the routes it runs.
+
+The whole app state — filters, selected club, map view — syncs to the URL, so "social 5Ks on the east side" is a link you can text to a friend.
+
+## Routes
+
+Routes start life as hand-drawn GPX files. A seed script parses each one into a **PostGIS** `LineString` in Supabase and uploads the original to a storage bucket. PostGIS serializes geometry back out as GeoJSON, so coordinates arrive in exactly the `[lng, lat]` order MapLibre expects — the map draws real route lines, not straight-line approximations between start and end.
+
+## Runner profiles
+
+Every runner gets a public profile at `/u/<handle>` that tracks club check-ins and awards trophies as stamps land. Clubs get a dedicated page of their own, and an internal admin tool keeps the directory data fresh.
+
+## Share cards
+
+A Vercel edge function renders 1200×630 OG share images on the fly with `@vercel/og` for the home page, every club, and every runner profile. A sibling function serves crawler-visible HTML for those routes, swapping per-page meta tags into the SPA shell so link previews work even though bots don't run JS — and it varies the cache key with the check-in count, so a profile's preview card refreshes as new stamps land.
+
+## Other resources
+
+The map and route tooling stand on some great open projects:
+
+- https://maplibre.org
+- https://openmaptiles.org
+- https://www.openstreetmap.org
+- https://onthegomap.com
